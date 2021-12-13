@@ -1,0 +1,22 @@
+---
+- hosts: "node1.example.com"
+  user: ansible
+  become: yes
+  become_method: sudo
+  become_user: root
+  tasks:
+
+
+
+
+  - name: "Change grub"
+    lineinfile:
+            state: present
+            dest: /etc/default/grub
+            backrefs: yes
+            regexp: '^(GRUB_CMDLINE_LINUX=(?!.*ifname)\"[^\"]+)(\".*)' 
+            line: '\1 net.ifnames=0 biosdevname=0\2'
+
+  - name: "make config"
+    shell: grub2-mkconfig
+          
