@@ -1,0 +1,15 @@
+---
+- hosts: "node1.example.com"
+  user: ansible
+  become: yes
+  become_method: sudo
+  become_user: root
+  tasks:
+  - name: install apache
+    yum: pkg=httpd state=latest
+  - name: enable at system startup
+    service: name=httpd enabled=yes state=started
+  - name: Create firewalld rules
+    firewalld: service=http zone=public permanent=yes immediate=yes state=enabled
+ 
+           

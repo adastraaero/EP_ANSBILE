@@ -1,0 +1,15 @@
+---
+- hosts: "node1.example.com"
+  user: ansible
+  become: yes
+  become_method: sudo
+  become_user: root
+  tasks:
+  - name: delete httpd
+    yum: name=httpd autoremove=yes state=absent    
+  - name: delete index. html
+    file: state=absent path=/var/www/html/index.html
+  - name: disable http
+    firewalld: service=http zone=public permanent=yes immediate=yes state=disabled  
+ 
+           
