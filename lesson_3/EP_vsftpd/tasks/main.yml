@@ -1,0 +1,43 @@
+---
+# tasks file for EP_vsftpd
+- name: install vsftpd
+  yum:
+          pkg: vsftpd
+          state: latest
+- name: populate service facts
+  service_facts:
+- name: open ftp ports
+  firewalld:
+    port: "{{ port }}/tcp"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+    - 20
+    - 21  
+  loop_control:
+    loop_var: port
+  when: ansible_facts.services['firewalld.service'].state == 'running' 
+
+- name: Install vsftp config
+  template: 
+     src: vstfpd.conf.j2
+     dest: "/etc/vsftpd/vsftpd.conf"
+     owner: root
+     group: root
+     mode: 0777
+
+- name: Create directory
+  ansible.builtin.file:
+          path: /var/ftp/pub/upload
+          state: directory
+          mode: 0777
+- name: Start vsftpd
+  service: name=vsftpd state=started
+
+- name: changing SElinux context
+  include: selinux.yml
+  notify:
+  - restart vsftpd  
+
+

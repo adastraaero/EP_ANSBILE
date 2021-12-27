@@ -1,0 +1,11 @@
+---
+- name: httpd playbook
+  hosts: "node1.example.com"
+  user: ansible
+  become: yes
+  become_method: sudo
+  become_user: root
+
+
+  roles:
+  - role: EP_vsftpd

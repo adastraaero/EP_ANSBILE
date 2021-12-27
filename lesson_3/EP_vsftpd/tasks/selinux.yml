@@ -1,0 +1,6 @@
+---
+- name: allow anonim write
+  seboolean:
+    name: ftpd_anon_write
+    state: on
+    persistent: yes

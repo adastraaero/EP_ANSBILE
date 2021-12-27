@@ -1,0 +1,33 @@
+---
+# tasks file for HttpdRole
+- name: install httpd
+  yum: pkg="httpd" state="latest"
+- name: Install main configuration file
+  template: 
+    src: index.html
+    dest: "/var/www/html/index.html"
+    owner: root
+    group: apache
+    mode: 0777
+- name: change permissions
+  file: dest=/var/www/html/index.html mode=a+x
+
+
+
+- name: populate service facts
+  service_facts:
+- name: checking http port
+  firewalld:
+    port: "{{ port }}/tcp"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+    - 80
+  loop_control:
+    loop_var: port
+  when: ansible_facts.services['firewalld.service'].state == 'running' 
+
+  notify:
+  - restart firewalld
+  - Restart httpd
